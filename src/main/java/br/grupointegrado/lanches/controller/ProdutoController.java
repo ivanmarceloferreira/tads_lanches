@@ -25,6 +25,7 @@ public class ProdutoController {
         return ResponseEntity.ok(this.repository.findAll());
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Produto> findById(@PathVariable Integer id) {
 //        return this.repository.findById(id)
@@ -37,11 +38,18 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public Produto save(@RequestBody ProdutoRequestDTO dto) {
+    public Produto save(@RequestBody Produto dto) {
         Produto produto = new Produto();
-        produto.setNome(dto.nome());
-        produto.setValor(dto.valor());
-        produto.setDescricao(dto.descricao());
+//        produto.setNome(dto.nome());
+//        produto.setValor(dto.valor());
+//        produto.setDescricao(dto.descricao());
+        produto.setNome(dto.getNome());
+        produto.setValor(dto.getValor());
+        produto.setDescricao(dto.getDescricao());
+
+        dto.getIngredientes().forEach(i -> i.setProduto(produto));
+
+        produto.setIngredientes(dto.getIngredientes());
 
         return this.repository.save(produto);
     }
