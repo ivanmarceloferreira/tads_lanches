@@ -2,7 +2,9 @@ package br.grupointegrado.lanches.controller;
 
 import br.grupointegrado.lanches.dto.ClienteRequestDTO;
 import br.grupointegrado.lanches.model.Cliente;
+import br.grupointegrado.lanches.model.Endereco;
 import br.grupointegrado.lanches.repository.ClienteRepository;
+import br.grupointegrado.lanches.repository.EnderecoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ public class ClienteController {
 
     @Autowired
     private ClienteRepository repository;
+
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
     @GetMapping
     public ResponseEntity<List<Cliente>> findAll() {
@@ -63,6 +68,18 @@ public class ClienteController {
 
         this.repository.delete(cliente);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/add-endereco")
+    public ResponseEntity<Cliente> addEndereco(@PathVariable Integer id,
+                                               @RequestBody Endereco endereco) {
+        Cliente cliente = this.repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+
+        endereco.setCliente(cliente);
+        this.enderecoRepository.save(endereco);
+
+        return ResponseEntity.ok(cliente);
     }
 
 }
