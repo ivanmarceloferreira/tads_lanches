@@ -64,4 +64,18 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
+    @PatchMapping("/{id}/fechar-pedido")
+    public ResponseEntity<Pedido> fecharPedido(@PathVariable Integer id) {
+
+        Pedido pedido = this.repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
+
+        if (!"FECHADO".equals(pedido.getStatus())) {
+            pedido.setStatus("FECHADO");
+            this.repository.save(pedido);
+        }
+
+        return ResponseEntity.ok(pedido);
+    }
+
 }

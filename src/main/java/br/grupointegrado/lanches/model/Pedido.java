@@ -30,6 +30,9 @@ public class Pedido {
     @JsonIgnoreProperties("pedido")
     private List<PedidoProduto> pedidoProdutos;
 
+    @Column
+    private String status;
+
     public Integer getId() {
         return id;
     }
@@ -78,5 +81,13 @@ public class Pedido {
         this.pedidoProdutos.add(pedidoProduto);
 
         return this.pedidoProdutos;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
