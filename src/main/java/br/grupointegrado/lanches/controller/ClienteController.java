@@ -3,8 +3,11 @@ package br.grupointegrado.lanches.controller;
 import br.grupointegrado.lanches.dto.ClienteRequestDTO;
 import br.grupointegrado.lanches.model.Cliente;
 import br.grupointegrado.lanches.model.Endereco;
+import br.grupointegrado.lanches.model.Favorito;
+import br.grupointegrado.lanches.model.Produto;
 import br.grupointegrado.lanches.repository.ClienteRepository;
 import br.grupointegrado.lanches.repository.EnderecoRepository;
+import br.grupointegrado.lanches.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,9 @@ public class ClienteController {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private ProdutoRepository produtoRepository;
 
     @GetMapping
     public ResponseEntity<List<Cliente>> findAll() {
@@ -78,6 +84,30 @@ public class ClienteController {
 
         endereco.setCliente(cliente);
         this.enderecoRepository.save(endereco);
+
+        return ResponseEntity.ok(cliente);
+    }
+
+    @PostMapping("/{id}/add-favorito")
+    public ResponseEntity<Cliente> addProdutoFavorito(@PathVariable Integer id,
+                                                      @RequestBody Integer produtoId) {
+
+        Cliente cliente = this.repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+
+        Produto produto = this.produtoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+
+
+        Favorito favorito = new Favorito();
+        favorito.setCliente(cliente);
+        favorito.setProduto(produto);
+
+        if (!cliente.getFavoritos().isEmpty() &&
+                !cliente.getFavoritos().contains(favorito)) {
+            cliente.addFavorito(favorito);
+            this.repository.save(cliente);
+        }
 
         return ResponseEntity.ok(cliente);
     }

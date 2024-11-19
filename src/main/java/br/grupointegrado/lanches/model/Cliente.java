@@ -3,6 +3,7 @@ package br.grupointegrado.lanches.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,10 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente")
     @JsonIgnoreProperties("cliente")
     private List<Endereco> enderecos;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("cliente")
+    private List<Favorito> favoritos;
 
     public Integer getId() {
         return id;
@@ -64,5 +69,20 @@ public class Cliente {
 
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+
+    public List<Favorito> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(List<Favorito> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public void addFavorito(Favorito favorito) {
+        if (this.favoritos == null) {
+            this.favoritos = new ArrayList<>();
+        }
+        this.favoritos.add(favorito);
     }
 }
